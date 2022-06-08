@@ -39,8 +39,7 @@ namespace QuizAPI.Controllers
                 })
                 */
                 //.Include(d => d.Question)
-                .ToList(),
-                ok = true
+                .ToList()
             });
         }
 
@@ -48,15 +47,26 @@ namespace QuizAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
+            //var category = _context.Categories
+            //     .Include(c => c.Question)
+            //     .ThenInclude(q => q.Answers)
+            //     .SingleOrDefault(c =>c.CategoryID == id);
+            //return Ok(new
+            //{
+            //    category
+
+            //});
+
             var category = _context.Categories
                  .Include(c => c.Question)
-                 .SingleOrDefault(c =>c.CategoryID == id);
+                 .ThenInclude(q => q.Answers)
+                 .SingleOrDefault(c => c.CategoryID == id);
             return Ok(new
             {
                 category
-                //ok = "true",
 
             });
+
         }
 
         // POST api/<CategoriesController>
@@ -68,13 +78,13 @@ namespace QuizAPI.Controllers
                 _context.Categories.Add(category);
                 _context.SaveChanges();
 
-                return Ok(new { ok = true, category });
+                return Ok(new { category });
                 
 
             }
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, new { ok = false, msg = "Unexpected error, check logs", details = ex.InnerException.Message });
+                return StatusCode(500, new { msg = "Unexpected error, check logs", details = ex.InnerException.Message });
             }
             catch (Exception e)
             {
@@ -93,7 +103,7 @@ namespace QuizAPI.Controllers
                 {
                     _context.Entry(category).State = EntityState.Modified;
                     _context.SaveChanges();
-                    return Ok(new { ok = true, category });
+                    return Ok(new { category });
                 }
                 return NotFound();
 
@@ -114,17 +124,17 @@ namespace QuizAPI.Controllers
                 var category = _context.Categories.Find(id);
                 if (category == null)
                 {
-                    return NotFound(new { ok = false, msg = "We could not find a category with that ID" });
+                    return NotFound(new { msg = "We could not find a category with that ID" });
                 }
 
                 _context.Categories.Remove(category);
                 _context.SaveChanges();
 
-                return Ok(new { ok = true, msg = "Category deleted" });
+                return Ok(new { msg = "Category deleted" });
             }
             catch (Exception)
             {
-                return StatusCode(500, new { ok = false, msg = "Unexpected error, check logs" });
+                return StatusCode(500, new {msg = "Unexpected error, check logs" });
             }
         }
     }

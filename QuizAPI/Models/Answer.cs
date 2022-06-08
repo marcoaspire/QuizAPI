@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace QuizAPI.Models
@@ -19,6 +20,7 @@ namespace QuizAPI.Models
 
         public bool Correct { get; set; }
 
+        [JsonIgnore]
         //one to many(inverse)
         public virtual Question Question { get; set; }
 

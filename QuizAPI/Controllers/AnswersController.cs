@@ -27,8 +27,7 @@ namespace QuizAPI.Controllers
             {
                 questions = _context.Answers
                             .Include(q => q.Question)
-                            .ToList(),
-                ok = true
+                            .ToList()
             });
         }
 
@@ -40,25 +39,28 @@ namespace QuizAPI.Controllers
                     .Include(q => q.Question).SingleOrDefault(c => c.AnswerID == id);
             return Ok(new
             {
-                Answer = h,
-                ok = "true"
+                Answer = h
             });
         }
 
         // POST api/<CategoriesController>
         [HttpPost]
-        public ActionResult Post(Answer answer)
+        public ActionResult Post(Answer[] answers)
         {
             try
             {
-                _context.Answers.Add(answer);
+                foreach (Answer answer in answers)
+                {
+                    _context.Answers.Add(answer);
+
+                }
                 _context.SaveChanges();
 
-                return Ok(new { ok = true, answer });
+                return Ok(new { answers });
             }
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, new { ok = false, msg = "Unexpected error, check logs", details = ex.InnerException.Message });
+                return StatusCode(500, new { msg = "Unexpected error, check logs", details = ex.InnerException.Message });
             }
             catch (Exception e)
             {
@@ -77,11 +79,9 @@ namespace QuizAPI.Controllers
                 {
                     _context.Entry(answer).State = EntityState.Modified;
                     _context.SaveChanges();
-                    return Ok(new { ok = true, answer });
+                    return Ok(new { answer });
                 }
                 return NotFound();
-
-
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -98,17 +98,15 @@ namespace QuizAPI.Controllers
                 var answer = _context.Answers.Find(id);
                 if (answer == null)
                 {
-                    return NotFound(new { ok = false, msg = "We could not find an answer with that ID" });
+                    return NotFound(new {  msg = "We could not find an answer with that ID" });
                 }
-
                 _context.Answers.Remove(answer);
                 _context.SaveChanges();
-
-                return Ok(new { ok = true, msg = "Questions deleted" });
+                return Ok(new {msg = "Questions deleted" });
             }
             catch (Exception)
             {
-                return StatusCode(500, new { ok = false, msg = "Unexpected error, check logs" });
+                return StatusCode(500, new { msg = "Unexpected error, check logs" });
             }
         }
     }

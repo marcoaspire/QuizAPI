@@ -23,12 +23,24 @@ namespace QuizAPI.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok(new
+            string Question = "Question";
+            string Category = "Category";
+            List<Answer> Answers = new List<Answer>();
+            return Ok( new
             {
                 questions = _context.Questions
-                            .Include(q => q.Answers)
-                            .ToList(),
-                ok = true
+                .Include(q => q.Answers)
+                .Select(x =>
+                    new
+                    {
+                        x.QuestionID,
+                        Question = x.Query,
+                        x.CategoryID,
+                        Category = x.Category.CategoryName,
+                        Answers = x.Answers
+                    }
+                )
+                .ToList()
             });
         }
 
@@ -37,11 +49,21 @@ namespace QuizAPI.Controllers
         public ActionResult Get(int id)
         {
             var h = _context.Questions
-                    .Include(q => q.Answers).SingleOrDefault(c => c.QuestionID == id);
+                    .Include(q => q.Answers)
+                    .Select(x =>
+                        new
+                        {
+                            x.QuestionID,
+                            Question = x.Query,
+                            x.CategoryID,
+                            Category = x.Category.CategoryName,
+                            Answers = x.Answers
+                        }
+                    )
+                    .SingleOrDefault(c => c.QuestionID == id);
             return Ok(new
             {
-                question = h,
-                ok = "true"
+                question = h
             });
         }
 
@@ -53,12 +75,11 @@ namespace QuizAPI.Controllers
             {
                 _context.Questions.Add(question);
                 _context.SaveChanges();
-
-                return Ok(new { ok = true, question });
+                return Ok(new { question });
             }
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, new { ok = false, msg = "Unexpected error, check logs", details = ex.InnerException.Message });
+                return StatusCode(500, new { msg = "Unexpected error, check logs", details = ex.InnerException.Message });
             }
             catch (Exception e)
             {
@@ -77,11 +98,9 @@ namespace QuizAPI.Controllers
                 {
                     _context.Entry(question).State = EntityState.Modified;
                     _context.SaveChanges();
-                    return Ok(new { ok = true, question });
+                    return Ok(new { question });
                 }
                 return NotFound();
-
-
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -98,17 +117,15 @@ namespace QuizAPI.Controllers
                 var question = _context.Questions.Find(id);
                 if (question == null)
                 {
-                    return NotFound(new { ok = false, msg = "We could not find a question with that ID" });
+                    return NotFound(new { msg = "We could not find a question with that ID" });
                 }
-
                 _context.Questions.Remove(question);
                 _context.SaveChanges();
-
-                return Ok(new { ok = true, msg = "Questions deleted" });
+                return Ok(new {  msg = "Questions deleted" });
             }
             catch (Exception)
             {
-                return StatusCode(500, new { ok = false, msg = "Unexpected error, check logs" });
+                return StatusCode(500, new { msg = "Unexpected error, check logs" });
             }
         }
     }

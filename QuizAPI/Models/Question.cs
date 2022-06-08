@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace QuizAPI.Models
 {
@@ -12,6 +15,7 @@ namespace QuizAPI.Models
         public int QuestionID { get; set; }
 
         [Required]
+        [JsonPropertyName("Question")]
         public string Query { get; set; }
         [Required]
         public int CategoryID { get; set; }
