@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using QuizAPI.Interfaces;
 
 namespace QuizAPI
 {
@@ -46,6 +47,7 @@ namespace QuizAPI
             services.AddDbContext<Context>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
             services.AddCors();
+            services.AddScoped<IAnswerService, Context>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

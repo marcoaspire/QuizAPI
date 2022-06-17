@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using QuizAPI.Interfaces;
 
 namespace QuizAPI.Controllers
 {
@@ -13,21 +14,51 @@ namespace QuizAPI.Controllers
     [ApiController]
     public class AnswersController : ControllerBase
     {
-        private readonly Context _context;
-        public AnswersController(Context context)
+        //private readonly Context _context;
+
+        // modify the type of the db field
+        private IAnswerService _context;
+        //public AnswersController() { }
+        /*
+        public AnswersController(IAnswerService context)
         {
-            _context = context;
+          _context = context;
+        }
+        */
+        public AnswersController(Context context, IAnswerService context2)
+        {
+            if (context!=null)
+                _context = context;
+            else
+                _context = context2;
+
+        }
+
+
+        [HttpGet("/prueba")]
+        public virtual bool Prueba()
+        {
+            return true;
         }
 
         // GET: api/<CategoriesController>
         [HttpGet]
-        public ActionResult Get()
+        public virtual ActionResult Get()
         {
+            Trace.WriteLine("entre get");
+            List<Answer> questions=_context.Answers.Include(q => q.Question).ToList();
+            //var questions=_context.Answers;
+            //var questions= _context.Get();
+
+            /*
+            foreach (var item in questions)
+            {
+                Debug.WriteLine(item.PosibleAnswer);
+            }
+            */
             return Ok(new
             {
-                questions = _context.Answers
-                            .Include(q => q.Question)
-                            .ToList()
+                questions
             });
         }
 
@@ -35,6 +66,8 @@ namespace QuizAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
+            Trace.WriteLine("entre get by id");
+
             var h = _context.Answers
                     .Include(q => q.Question).SingleOrDefault(c => c.AnswerID == id);
             return Ok(new
@@ -68,7 +101,7 @@ namespace QuizAPI.Controllers
                 throw;
             }
         }
-
+        
         // PUT api/<CategoriesController>/5
         [HttpPut("{id}")]
         public ActionResult Put(int id, Answer answer)
@@ -77,7 +110,8 @@ namespace QuizAPI.Controllers
             {
                 if (id == answer.AnswerID)
                 {
-                    _context.Entry(answer).State = EntityState.Modified;
+                    //_context.Entry(answer).State = EntityState.Modified;
+                    _context.MarkAsModified(answer);
                     _context.SaveChanges();
                     return Ok(new { answer });
                 }
@@ -88,7 +122,7 @@ namespace QuizAPI.Controllers
                 return NotFound();
             }
         }
-
+        
         // DELETE api/<CategoriesController>/5
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
