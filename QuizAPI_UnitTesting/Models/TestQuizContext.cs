@@ -11,7 +11,6 @@ namespace QuizAPI_UnitTesting.Models
 {
     class TestQuizContext: IAnswerService
     {
-        
         public TestQuizContext()
         {
            this.Answers = new TestAnswerDbSet();
@@ -35,7 +34,8 @@ namespace QuizAPI_UnitTesting.Models
 
         public Answer Add(Answer newItem)
         {
-            throw new NotImplementedException();
+            this.Answers.Add(newItem);
+            return newItem;
         }
 
         public Answer GetById(Guid id)
@@ -47,5 +47,6 @@ namespace QuizAPI_UnitTesting.Models
         {
             throw new NotImplementedException();
         }
+
     }
 }

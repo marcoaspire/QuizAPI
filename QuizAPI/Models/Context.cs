@@ -59,6 +59,11 @@ namespace QuizAPI.Models
 
         public void MarkAsModified(Answer item)
         {
+            Entry(item).State = EntityState.Modified;
+        }
+
+        public Answer Find(Guid id)
+        {
             throw new NotImplementedException();
         }
 

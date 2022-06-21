@@ -46,7 +46,7 @@ namespace QuizAPI.Controllers
         public virtual ActionResult Get()
         {
             Trace.WriteLine("entre get");
-            List<Answer> questions=_context.Answers.Include(q => q.Question).ToList();
+            List<Answer> answers = _context.Answers.Include(q => q.Question).ToList();
             //var questions=_context.Answers;
             //var questions= _context.Get();
 
@@ -58,7 +58,7 @@ namespace QuizAPI.Controllers
             */
             return Ok(new
             {
-                questions
+                answers
             });
         }
 
@@ -138,8 +138,9 @@ namespace QuizAPI.Controllers
                 _context.SaveChanges();
                 return Ok(new {msg = "Questions deleted" });
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 return StatusCode(500, new { msg = "Unexpected error, check logs" });
             }
         }

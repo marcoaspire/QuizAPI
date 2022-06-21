@@ -32,13 +32,13 @@ namespace QuizAPI_UnitTesting.Models
             return null;
             //return item;
         }
-
+        
         public override Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<T> Remove(T item)
         {
             _data.Remove(item);
-            var entity = base.Attach(item);
-            return entity;
-            //return item;
+            //var entity = base.Attach(item);
+            //return entity;
+            return null;
         }
 
         public override Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<T> Attach(T item)
@@ -48,7 +48,6 @@ namespace QuizAPI_UnitTesting.Models
             return entity;
             //return item;
         }
-
         public T Create()
         {
             return Activator.CreateInstance<T>();
@@ -88,5 +87,7 @@ namespace QuizAPI_UnitTesting.Models
         {
             return _data.GetEnumerator();
         }
+
+
     }
 }
