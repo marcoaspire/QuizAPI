@@ -15,10 +15,15 @@ namespace QuizAPI.Interfaces
         void Remove(Guid id);
 
         public DbSet<Answer> Answers { get;set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Question> Questions { get; set; }
 
         //
         int SaveChanges();
         void MarkAsModified(Answer item);
+        void MarkAsModified(Category item);
+        void MarkAsModified(Question item);
+
 
     }
 }

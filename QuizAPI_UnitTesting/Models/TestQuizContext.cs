@@ -14,6 +14,8 @@ namespace QuizAPI_UnitTesting.Models
         public TestQuizContext()
         {
            this.Answers = new TestAnswerDbSet();
+           this.Questions= new TestQuestionDbSet();
+           this.Categories= new TestCategoryDbSet();
         }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Question> Questions { get; set; }
@@ -31,7 +33,7 @@ namespace QuizAPI_UnitTesting.Models
         {
             throw new NotImplementedException();
         }
-
+        //answer
         public Answer Add(Answer newItem)
         {
             this.Answers.Add(newItem);
@@ -47,6 +49,23 @@ namespace QuizAPI_UnitTesting.Models
         {
             throw new NotImplementedException();
         }
+        //category
+        public Category Add(Category newItem)
+        {
+            this.Categories.Add(newItem);
+            return newItem;
+        }
+        //question
+        public Question Add(Question newItem)
+        {
+            this.Questions.Add(newItem);
+            return newItem;
+        }
 
+        public void MarkAsModified(Category item)
+        {}
+
+        public void MarkAsModified(Question item)
+        {}
     }
 }

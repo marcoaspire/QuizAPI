@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using QuizAPI.Interfaces;
 
 namespace QuizAPI.Controllers
 {
@@ -13,31 +14,41 @@ namespace QuizAPI.Controllers
     [ApiController]
     public class QuestionsController : ControllerBase
     {
-        private readonly Context _context;
+        //private readonly Context _context;
+        private IAnswerService _context;
+
+        /*
         public QuestionsController(Context context)
         {
             _context = context;
+        }
+        */
+        public QuestionsController(Context context, IAnswerService context2)
+        {
+            if (context != null)
+                _context = context;
+            else
+                _context = context2;
         }
 
         // GET: api/<CategoriesController>
         [HttpGet]
         public ActionResult Get()
         {
-            string Question = "Question";
-            string Category = "Category";
             List<Answer> Answers = new List<Answer>();
+            List<CategoryResponse> questions = new List<CategoryResponse>();
             return Ok( new
             {
                 questions = _context.Questions
                 .Include(q => q.Answers)
                 .Select(x =>
-                    new
+                    new CategoryResponse
                     {
-                        x.QuestionID,
-                        Question = x.Query,
-                        x.CategoryID,
-                        Category = x.Category.CategoryName,
-                        Answers = x.Answers
+                        QuestionID  = x.QuestionID,
+                        Question    = x.Query,
+                        CategoryID  = x.CategoryID,
+                        Category    = x.Category.CategoryName,
+                        Answers     = x.Answers
                     }
                 )
                 .ToList()
@@ -48,23 +59,28 @@ namespace QuizAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            var h = _context.Questions
+            var question = _context.Questions
                     .Include(q => q.Answers)
                     .Select(x =>
-                        new
+                        new CategoryResponse
                         {
+                            QuestionID=
                             x.QuestionID,
                             Question = x.Query,
+                            CategoryID=
                             x.CategoryID,
                             Category = x.Category.CategoryName,
                             Answers = x.Answers
                         }
                     )
                     .SingleOrDefault(c => c.QuestionID == id);
-            return Ok(new
-            {
-                question = h
-            });
+            if (question.QuestionID!=0)
+                return Ok(new
+                {
+                    question
+                });
+            else
+                return NotFound();
         }
 
         // POST api/<CategoriesController>
@@ -84,7 +100,8 @@ namespace QuizAPI.Controllers
             catch (Exception e)
             {
                 Trace.WriteLine(e);
-                throw;
+                return StatusCode(500, new { msg = "Unexpected error, check logs" });
+
             }
         }
 
@@ -96,8 +113,10 @@ namespace QuizAPI.Controllers
             {
                 if (id == question.QuestionID)
                 {
-                    _context.Entry(question).State = EntityState.Modified;
+                    //_context.Entry(question).State = EntityState.Modified;
+                    _context.MarkAsModified(question);
                     _context.SaveChanges();
+
                     return Ok(new { question });
                 }
                 return NotFound();

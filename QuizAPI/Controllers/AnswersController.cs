@@ -102,7 +102,7 @@ namespace QuizAPI.Controllers
             catch (Exception e)
             {
                 Trace.WriteLine(e);
-                throw;
+                return StatusCode(500, new { msg = "Unexpected error, check logs" });
             }
         }
         

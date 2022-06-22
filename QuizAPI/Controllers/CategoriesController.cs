@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QuizAPI.Interfaces;
 using QuizAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,21 @@ namespace QuizAPI.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly Context _context;
+        //private readonly Context _context;
+        private IAnswerService _context;
+        /*
         public CategoriesController(Context context)
         {
             _context = context;
+        }
+        */
+        public CategoriesController(Context context, IAnswerService context2)
+        {
+            if (context != null)
+                _context = context;
+            else
+                _context = context2;
+
         }
 
         // GET: api/<CategoriesController>
@@ -61,11 +73,13 @@ namespace QuizAPI.Controllers
                  .Include(c => c.Question)
                  .ThenInclude(q => q.Answers)
                  .SingleOrDefault(c => c.CategoryID == id);
-            return Ok(new
-            {
-                category
-
-            });
+            if (category != null)
+                return Ok(new
+                {
+                    category
+                });
+            else
+                return NotFound();
 
         }
 
@@ -89,7 +103,7 @@ namespace QuizAPI.Controllers
             catch (Exception e)
             {
                 Trace.WriteLine(e);
-                throw;
+                return StatusCode(500, new { msg = "Unexpected error, check logs"});
             }
         }
 
@@ -101,7 +115,8 @@ namespace QuizAPI.Controllers
             {
                 if (id == category.CategoryID)
                 {
-                    _context.Entry(category).State = EntityState.Modified;
+                    //_context.Entry(category).State = EntityState.Modified;
+                    _context.MarkAsModified(category);
                     _context.SaveChanges();
                     return Ok(new { category });
                 }

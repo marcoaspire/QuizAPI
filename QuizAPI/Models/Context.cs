@@ -67,6 +67,17 @@ namespace QuizAPI.Models
             throw new NotImplementedException();
         }
 
+        public void MarkAsModified(Category item)
+        {
+            Entry(item).State = EntityState.Modified;
+
+        }
+
+        public void MarkAsModified(Question item)
+        {
+            Entry(item).State = EntityState.Modified;
+        }
+
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Question> Questions { get; set; }
         public virtual DbSet<Answer> Answers { get; set; }
