@@ -60,181 +60,6 @@ namespace QuizAPI_UnitTesting
 
 
         [Test]
-        public void Test1()
-        {
-            TestContext.WriteLine("test context");
-            Console.WriteLine("test console");
-
-            _service = new AnswerFake();
-
-            //var mockSet = new Mock<DbSet<Answer>>();
-            _context = new Mock<Context>();
-            /*
-            _context.Setup(repo => repo.Answers).Returns(
-                _service.Answers2
-            );*/
-
-            controller = new AnswersController(null,_service);
-
-
-
-            //var mockSet = new Mock<DbSet<Answer>>();
-            var mockSet = new Mock<Answer>();
-
-
-
-            //mockSet.Setup(a => a.Add(mockAnswer));
-
-            //PAso!!!!
-            //Mock<Context> _context = new Mock<Context>();
-            //controller = new AnswersController(_context.Object);
-
-            /*
-            _context = new Mock<Context>();
-
-            
-             _context4.Set<Answer>().AddRange(
-               _service.Answers2
-
-            );
-            */
-
-            /*
-            _context.Setup(repo => repo.Answers).Returns(
-                _service.Set<Answer>()
-            );
-            
-            */
-
-
-            //controller = new AnswersController(_context.Object);
-            //var answers = controller.Get();
-
-
-            /*
-            var mockSet = new Mock<DbSet<Answer>>();
-            var mockContext = new Mock<Context>();
-            mockContext.Setup(m => m.Answers).Returns(mockSet.Object);
-            */
-            //fake instance
-            //var _context = new Mock<Context>();
-
-            //arrange 
-            //act
-            var result2 = controller.Get();
-            var result = controller.Prueba();
-            //Assert
-            Assert.IsTrue(result);
-        }
-        [Test]
-        public void Test2()
-        {
-            ////arrange a
-            var testAnswers = AnswersFake();
-
-            //var fakeAnswers = A.CollectionOfDummy<Answer>(5).AsEnumerable();
-            //var dataStore = A.Fake<Answer>();
-            ////A.CallTo( ()=> dataStore.)
-
-            //foreach (var fake in fakeAnswers)
-            //{
-            //    Console.WriteLine(fake.AnswerID);
-            //    Console.WriteLine(fake.Correct);
-            //    Console.WriteLine(fake.PosibleAnswer);
-            //    Console.WriteLine(fake.QuestionID);
-            //    Console.WriteLine();
-            //}
-            //Console.WriteLine("Fin");
-
-            //Console.WriteLine(dataStore.AnswerID);
-            //Console.WriteLine(dataStore.Correct);
-            //Console.WriteLine(dataStore.PosibleAnswer);
-
-            //Console.WriteLine(fakeAnswers);
-
-            //_context = new Mock<Context>();
-           // AnswersController controller = new AnswersController(_context);
-
-
-
-
-            // Setup mocking behavior  
-            var result = controller.Get(10);
-            var okObjectResult = (OkObjectResult)result;
-
-            //Assert
-            okObjectResult.StatusCode.Equals(200);
-
-            //act
-            //ActionResult actionResult = s.Get();
-
-            Console.WriteLine(okObjectResult);
-            //Assert
-            //var contentResult = response as OkObjectResult;
-
-            //Console.WriteLine(response);
-
-            //Assert.IsInstanceOf<Microsoft.AspNetCore.Mvc.OkResult>(okObjectResult);
-
-            // Assert the result  
-            //Assert.IsNotNull(contentResult);
-            //Assert.IsNotNull(contentResult.Content);
-            //Assert.AreEqual(1, contentResult.Content.AnswerID);
-            //Assert.IsFalse(result);
-
-
-
-        }
-        [Test]
-
-        public void Test3()
-        {
-            var controller = new AnswersController(null,new TestQuizContext() );
-
-            Answer[] item = MockAnswers();
-            //Answer[] item2 = MockAnswers2();
-            Object answersObject = new { answers = item };
-
-            /*
-            var result =
-                controller.Get() as OkObjectResult;
-            */
-            var result =
-                controller.Post(item) as OkObjectResult;
-
-            Assert.IsNotNull(result);
-
-            dynamic anon = result.Value;
-            var x=anon.GetType().GetProperty("answers").GetValue(anon);
-
-
-            var arrayAnswers = result.Value as Answer[];//null
-            //Console.WriteLine(c.GetType());
-            /*
-            foreach (Answer i in result.Value)
-            {
-                Console.WriteLine(i.PosibleAnswer);
-            }
-
-            */
-            //item=< <QuizAPI.Models.Answer>, <QuizAPI.Models.Answer> >
-            //result.Value = :  <{ answers = QuizAPI.Models.Answer[] }>
-            var result3 = (OkObjectResult)result; // <-- Cast is before using it.
-            var result4 = result3.Value;
-            //var result5=(Answer[])result4; //error
-            var type = result.Value.GetType();
-            //var count = (int)result.Value.GetType().GetProperty("count").GetValue(result.Value);
-            Assert.AreEqual(item, x); //Buscar como comparar
-            //Assert.AreEqual(answersObject, result.Value); //Buscar como comparar
-
-            result.StatusCode.Equals(200);
-
-            //Assert.AreEqual(result.RouteName, "DefaultApi");
-            //Assert.AreEqual(result.RouteValues["id"], result.Content.Id);
-            //Assert.AreEqual(result.Content.Name, item.Name);
-        }
-
-        [Test]
         public void Post_answers()
         {
             //arrange
@@ -246,33 +71,14 @@ namespace QuizAPI_UnitTesting
             var answersResponse = values.GetType().GetProperty("answers").GetValue(values);
             //assert
             Assert.IsNotNull(result);
-            result.StatusCode.Equals(200);
+            Assert.IsTrue(result.StatusCode.Equals(200));
             Assert.AreEqual(item, answersResponse); 
         }
 
         [Test]
-        public void Get_answers()
+        public void Get_answers_ShouldReturnOK()
         {
-            /*
-            //arrange
-            var testcontext = new TestDbSet<Answer>();
-            Answer[] mockAnswers = MockAnswers();
-            foreach (Answer Answer in mockAnswers)
-            {
-                testcontext.Add(Answer);
-            }
-            var controller = new AnswersController(null, new TestQuizContext(testcontext));
-
-            //act   
-            var result = controller.Get() as OkObjectResult;
-            //assert
-            Assert.IsNotNull(result);
-            result.StatusCode.Equals(200);
-            dynamic values = result.Value;
-            var answersResponse = values.GetType().GetProperty("answers").GetValue(values);
-            Assert.AreEqual(mockAnswers, answersResponse);
-         
-            */
+           
             
             var context = new TestQuizContext();
             Answer[] mockAnswers = MockAnswers();
@@ -284,37 +90,49 @@ namespace QuizAPI_UnitTesting
             var result = controller.Get() as OkObjectResult;
             //assert
             Assert.IsNotNull(result);
-            result.StatusCode.Equals(200);
+            Assert.IsTrue(result.StatusCode.Equals(200));
             dynamic values = result.Value;
             var answersResponse = values.GetType().GetProperty("answers").GetValue(values);
             Assert.AreEqual(mockAnswers, answersResponse);
         }
-        
+
+        //Get_answersByID
+        [Test]
+        public void Get_answersByID_ShouldReturnOK()
+        {
+            //arrange
+            var context = new TestQuizContext();
+            Answer mockAnswer = FakeAnswer();
+            context.Add(mockAnswer);
+            var controller = new AnswersController(null, context);
+            var result = controller.Get(mockAnswer.AnswerID) as OkObjectResult;
+            //assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.StatusCode.Equals(200));
+            dynamic values = result.Value;
+            var answersResponse = values.GetType().GetProperty("Answer").GetValue(values);
+            Assert.AreEqual(mockAnswer, answersResponse);
+        }
+
+        [Test]
+        public void Get_answersByID_ShouldReturnNotFound()
+        {
+            //arrange
+            var context = new TestQuizContext();
+            var controller = new AnswersController(null, context);
+            //var result = controller.Get(105) as NotFoundObjectResult;
+            var result = controller.Get(105) as Microsoft.AspNetCore.Mvc.NotFoundResult;
+            //assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.StatusCode.Equals(404));
+
+        }
+
+        //Delete answer
         [Test]
         public void Get_delete_ShouldReturnOK()
         {
-            /*
-
-            //arrange
-            var testcontext = new TestDbSet<Answer>();
-            List<Answer> mockAnswers = AnswersFake();
-            foreach (Answer Answer in mockAnswers)
-            {
-                testcontext.Add(Answer);
-            }
-            mockAnswers.Remove(mockAnswers.Find(x => x.AnswerID == 1));
-            //var controller = new AnswersController(null, new TestQuizContext(new TestAnswerDbSet(testcontext)));
-            var controller = new AnswersController(null, new TestQuizContext(testcontext));
-
-            //act
-            var result = controller.Delete(1) as OkObjectResult;
-            //assert
-            Assert.IsNotNull(result);
-            result.StatusCode.Equals(200);
-            dynamic values = result.Value;
-            var answersResponse = values.GetType().GetProperty("answers").GetValue(values);
-            Assert.AreEqual(mockAnswers, answersResponse);
-            */
+           
 
             var context = new TestQuizContext();
             Answer[] mockAnswers = MockAnswers();
@@ -325,11 +143,10 @@ namespace QuizAPI_UnitTesting
             var controller = new AnswersController(null, context);
             var result = controller.Delete(1) as OkObjectResult;
             Assert.IsNotNull(result);
-            result.StatusCode.Equals(200);
-
+            Assert.IsTrue(result.StatusCode.Equals(200));
         }
-        [Test]
 
+        [Test]
         public void Get_delete_ShouldReturnNotFound()
         {
             var context = new TestQuizContext();
@@ -337,12 +154,26 @@ namespace QuizAPI_UnitTesting
             var controller = new AnswersController(null, context);
             var result = controller.Delete(1) as NotFoundObjectResult;
             Assert.IsNotNull(result);
-            result.StatusCode.Equals(404);
-
+            Assert.IsTrue(result.StatusCode.Equals(404));
         }
+
+        [Test]
+        public void Get_delete_ShouldReturn500Error()
+        {
+            //arrange
+            var controller = new AnswersController(null, null);
+            //act
+            var result = controller.Delete(1) as ObjectResult;
+            //assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.StatusCode.Equals(500));
+        }
+
+        //Update answer
+
         [Test]
 
-        public void Get_update()
+        public void Get_update_ShouldReturnOk()
         {
             //arrange
             var context = new TestQuizContext();
@@ -351,42 +182,45 @@ namespace QuizAPI_UnitTesting
             {
                 context.Add(Answer);
             }
-
-            Answer mockAnswer = new Answer()
-            {
-                AnswerID = 1,
-                Correct = true,
-                PosibleAnswer = "Something updated",
-                QuestionID = 1
-            };
-            
+            Answer mockAnswer =FakeAnswer();
             var controller = new AnswersController(null, context);
             //act
             var result = controller.Put(1, mockAnswer) as OkObjectResult;
             //assert
             Assert.IsNotNull(result);
-            result.StatusCode.Equals(200);
+            Assert.IsTrue(result.StatusCode.Equals(200));
+        }
+
+        [Test]
+        public void Get_update_ShouldReturnNotFound()
+        {
+            //arrange
+            var context = new TestQuizContext();
+            Answer[] mockAnswers = MockAnswers();
+            foreach (Answer Answer in mockAnswers)
+            {
+                context.Add(Answer);
+            }
+            Answer mockAnswer = FakeAnswer();
+            var controller = new AnswersController(null, context);
+            //act
+            var result = controller.Put(1000, mockAnswer) as Microsoft.AspNetCore.Mvc.NotFoundResult;
+            //assert
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.StatusCode.Equals(404));
+
         }
 
 
-
-        public List<Answer> AnswersFake()
+        public Answer FakeAnswer()
         {
-            return new List<Answer>()
+            return new Answer()
             {
-                new Answer() { 
-                    AnswerID=1,
-                    Correct=true,
-                    PosibleAnswer="Something",
-                    QuestionID=1
-                },
-                new Answer() {
-                    AnswerID=2,
-                    Correct=false,
-                    PosibleAnswer="Something bad",
-                    QuestionID=1
-                },
-
+                AnswerID = 1,
+                Correct = true,
+                PosibleAnswer = "Something updated",
+                QuestionID = 1
             };
         }
 
@@ -432,22 +266,6 @@ namespace QuizAPI_UnitTesting
             };
             return answers;
         }
-
-        /*
-        public DbSet<Answer> MockSetAnswers()
-        {
-
-                new Answer()
-                {
-                    AnswerID = 1,
-                    Correct = true,
-                    PosibleAnswer = "Something",
-                    QuestionID = 1
-                }
-            );
-        }
-        */
-
     }
 
 }

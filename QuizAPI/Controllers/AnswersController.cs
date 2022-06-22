@@ -70,10 +70,14 @@ namespace QuizAPI.Controllers
 
             var h = _context.Answers
                     .Include(q => q.Question).SingleOrDefault(c => c.AnswerID == id);
-            return Ok(new
-            {
-                Answer = h
-            });
+
+            if (h != null)
+                return Ok(new
+                {
+                    Answer = h
+                });
+            else
+                return NotFound();
         }
 
         // POST api/<CategoriesController>
